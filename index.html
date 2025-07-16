@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Minu's All-in-One Notes</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🌸 Chittu's Notes App 💖</h1>
+
+    <textarea id="noteInput" placeholder="Write your note here..."></textarea>
+
+    <div class="controls">
+      <button onclick="saveNote()">💾 Save</button>
+      <button onclick="clearInput()">❌ Clear</button>
+    </div>
+
+    <div class="notes-list" id="notesList"></div>
+  </div>
+
+  <script>
+  let notes = [];
+
+  // Load saved notes when app starts
+  window.notesAPI.loadNotes().then(savedNotes => {
+    notes = savedNotes;
+    displayNotes();
+  });
+
+  function saveNote() {
+    const note = document.getElementById("noteInput").value.trim();
+    if (note) {
+      notes.push(note);
+      window.notesAPI.saveNotes(notes);
+      displayNotes();
+      document.getElementById("noteInput").value = '';
+    }
+  }
+
+  function clearInput() {
+    document.getElementById("noteInput").value = '';
+  }
+
+  function deleteNote(index) {
+    notes.splice(index, 1);
+    window.notesAPI.saveNotes(notes);
+    displayNotes();
+  }
+
+  function displayNotes() {
+    const list = document.getElementById("notesList");
+    list.innerHTML = '';
+
+    notes.forEach((note, index) => {
+      const card = document.createElement("div");
+      card.className = "note-card";
+
+      const text = document.createElement("div");
+      text.className = "note-text";
+      text.textContent =' 🌸 ${note}';
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "delete-btn";
+      delBtn.textContent = "🗑️";
+      delBtn.onclick = () => deleteNote(index);
+
+      card.appendChild(text);
+      card.appendChild(delBtn);
+      list.appendChild(card);
+    });
+  }
+</script>
+</body>
+</html>
